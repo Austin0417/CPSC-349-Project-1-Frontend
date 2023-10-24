@@ -1,42 +1,34 @@
-
+// Array that will store the id of each post, with the top post's id being at index 0
 const postIds = [];
-const userUpvotes = {};
+
+// Array that will store the upvote counts of each post (index 0 will represent number of upvotes for the first post at the top of the page)
 let upvoteCounts = [];
+
+// Dictionary that will have post id as keys, and boolean value as value
+// Keeps track of the current user's upvote status on each post. This will be used to determine whether an Upvote should be added, or removed
+// E.g if a Post with id of 5 is upvoted by the current user, it will look like {5 : true}
+const userUpvotes = {};
+
+
 const user_id = localStorage.getItem("user_id");
 
 
+// If returning to the main page via the browser's back arrow, reload the page
+window.onpageshow = function(event) {
+    if (window.performance.navigation.type === 2) {
+        console.log("back arrow");
+        window.location.reload();
+    }
+}
 main();
 
 
+// Simple check to see if the user was logged in correctly (user_id was retrieved correctly)
 function shouldLoadPosts() {
     return localStorage.getItem("user_id") >= 0;
 }
 
-function postsPage() {
-    if (shouldLoadPosts()) {
-        fetch('http://localhost:8080/api/posts', {
-            method: 'GET'
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Couldn't GET all posts");
-            }
-            return response.text();
-        })
-        .then(posts => {
-            let json = JSON.parse(posts);
-            json.forEach((post, index) => {
-                console.log("Post id=" + post['id']);
-                console.log(post['upvotes'].length);
-                postIds.push(post['id']);
-                appendPost(post, post['upvotes'], index);
-            })
-            console.log(userUpvotes);
-        })
-        .catch(error => {
-            console.log(error);
-        })
-    }
+function addEventHandlers() {
     let toggleBtn = document.querySelector("#toggleBtn");
     let closeBtn = document.querySelector("#closeBtn");
     let sidebar = document.querySelector("#sidebar");
@@ -67,10 +59,12 @@ function postsPage() {
     });
     logout.addEventListener('click', function(event) {
         localStorage.setItem("user_id", -1);
+        shouldReload = true;
         window.location.href = "login.html";
     })
 
 
+    // On form submit, perform a POST request to the backend, which will create a new post belonging to the current userId
     postForm.addEventListener('submit', function(event) {
         event.preventDefault();
         postDialog.style.display = 'none';
@@ -114,15 +108,46 @@ function postsPage() {
 
     viewPosts.addEventListener('click', function(event) {
         event.preventDefault();
+        shouldReload = true;
         window.location.href = "my-posts.html";
     });
 }
 
+// Using the stored user_id, query the database for all posts having userId == user_id
+function postsPage() {
+    if (shouldLoadPosts()) {
+        fetch('http://localhost:8080/api/posts', {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Couldn't GET all posts");
+            }
+            return response.text();
+        })
+        .then(posts => {
+            let json = JSON.parse(posts);
+            json.forEach((post, index) => {
+                console.log("Post id=" + post['id']);
+                console.log(post['upvotes'].length);
+                postIds.push(post['id']);
+                appendPost(post, post['upvotes'], index);
+            })
+            console.log(userUpvotes);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
+}
+
 function main() {
     postsPage();
+    addEventHandlers();
 }
 
 
+// Helper method to easily add new Posts to the existing posts-container div
 function appendPost(post, upvotes, post_index) {
     console.log(post);
     let postContainer = document.querySelector(".posts-container");
@@ -184,7 +209,7 @@ function appendPost(post, upvotes, post_index) {
     upvoteImg.addEventListener('click', function(event) {
         console.log("Upvote clicked");
         if (userUpvotes[postIds[post_index]]) {
-            // Remove upvote
+            // DELETE request for Upvote
             fetch('http://localhost:8080/api/upvotes/remove?user_id=' + user_id + '&post_id=' + postIds[post_index], {
                 method: "DELETE"
             })
@@ -205,7 +230,7 @@ function appendPost(post, upvotes, post_index) {
                 upvoteImg.setAttribute('src', 'resources/upvote-inactive.png');
             })
         } else {
-            // Post upvote
+            // POST request for Upvote
             fetch('http://localhost:8080/api/upvotes?user_id=' + user_id + '&post_id=' + postIds[post_index], {
                 method: "POST"
             })
@@ -238,6 +263,8 @@ function appendPost(post, upvotes, post_index) {
     postContainer.append(postDiv);
 }
 
+// Method that will loop through all of the upvotes (Array of JSON Objects under each Post) and check if the upvote's user_id matches the current userId
+// If it matches, set the upvote arrow to be orange
 function checkUserHasUpvotedPost(upvotes) {
     let result = false;
     upvotes.forEach(upvote => {

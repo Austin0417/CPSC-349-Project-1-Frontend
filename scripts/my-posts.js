@@ -1,4 +1,4 @@
-let posts = [];     // List of Post Objects
+
 let postDialog = document.querySelector("#post-dialog");
 let closePostDialog = document.querySelector("#close-dialog-btn");
 let postForm = document.querySelector("#post-form");
@@ -7,10 +7,14 @@ let dialogPostTitle = document.querySelector("#postTitle");
 let dialogPostBody = document.querySelector("#postBody");
 let dialogPostImageUrl = document.querySelector("#postImage");
 
+
+ // List of Post Objects, top-most post at index 0
+let posts = [];
+
 // Variable to keep track of current selected Post's id when Edit or Delete is clicked
 let selectedPostId = -1;
 
-// Will hold the updated JSON object for an edited Post
+// Will hold the updated JSON object for an edited Post, which will be sent along with the PUT request
 let updatedPostData = {};
 
 
@@ -52,6 +56,7 @@ function setEventHandlers() {
         .then(responseSuccess => {
             console.log(responseSuccess);
         })
+        window.location.reload();
     })
     let confirmationAccept = document.querySelector(".confirm-delete");
     let confirmationDecline = document.querySelector(".cancel-delete");
@@ -71,13 +76,17 @@ function setEventHandlers() {
         .then(responseData => {
             console.log(responseData);
         })
+        confirmationDialog.style.display = "none";
+        window.location.reload();
     })
     confirmationDecline.addEventListener('click', function(event) {
         confirmationDialog.style.display = "none";
+        window.location.reload();
     })
     updatedPostData = {};
 }
 
+// GET request to the backend to retrieve all posts associated with the current userId
 function fetchUserPosts() {
     let user_id = localStorage.getItem("user_id");
     console.log(user_id);
