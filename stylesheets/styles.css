@@ -161,7 +161,8 @@ form button:hover {
 }
 
 .post {
-    width: 70%;
+    width: auto; /* Set your desired width */
+    height: auto; /* Set your desired height */
 
     border: 2px solid rgb(101, 117, 145);
     overflow: hidden; 
