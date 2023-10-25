@@ -9,6 +9,7 @@ let upvoteCounts = [];
 // E.g if a Post with id of 5 is upvoted by the current user, it will look like {5 : true}
 const userUpvotes = {};
 
+let voteCount = 0;
 
 const user_id = localStorage.getItem("user_id");
 
@@ -147,66 +148,81 @@ function main() {
 }
 
 
-// Helper method to easily add new Posts to the existing posts-container div
-function appendPost(post, upvotes, post_index) {
-    console.log(post);
-    let postContainer = document.querySelector(".posts-container");
-
-    let postDiv = document.createElement('div');
-    postDiv.classList.add("post");
-
+function createPostTitleDiv(post) {
     let postTitleDiv = document.createElement('div');
-    let postImageDiv = document.createElement('div');
-    let postContentDiv = document.createElement('div');
-    let upvoteDiv = document.createElement('div');
-
-    postTitleDiv.classList.add("post-title");
-    postImageDiv.classList.add("post-image");
-    postContentDiv.classList.add('post-content');
-    upvoteDiv.classList.add('post-footer');
+    postTitleDiv.classList.add('post-title');
 
     let title = document.createElement('h2');
     title.textContent = post['title'];
     let postAuthor = document.createElement('h3');
     postAuthor.textContent = "Posted by: " + post['user']['username'];
     postTitleDiv.append(postAuthor);
+    postTitleDiv.append(title);
+    return postTitleDiv;
 
+}
+
+function createPostImageDiv(post) {
+    let postImageDiv = document.createElement('div');
+    postImageDiv.classList.add("post-image");
     let postImage = document.createElement('img');
-    postImage.alt = "Post Image";
-    postImage.src = post['imageUrl'];
+    postImage.setAttribute('alt', "Post Image");
+    postImage.setAttribute('src', post['imageUrl']);
 
+    postImageDiv.append(postImage);
+    return postImageDiv;
+}
+
+function createPostContentDiv(post) {
+    let postContentDiv = document.createElement('div');
+    postContentDiv.classList.add('post-content');
     let content = document.createElement('h4');
     content.textContent = post['textContent'];
     console.log("Text content for post id=" + post['id'] + ": " + post['textContent']);
-
-    postTitleDiv.append(title);
-    postImageDiv.append(postImage);
     postContentDiv.append(content);
 
-    let upvoteImg = document.createElement('img');
-    upvoteImg.classList.add("upvote-image");
+    return postContentDiv;
+}
 
+function createPostVoteDiv(upvotes, post_index) {
+    let postVoteDiv = document.createElement('div');
+    postVoteDiv.classList.add('post-footer');
+    let upvoteBtn = document.createElement('img');
+    upvoteBtn.classList.add("upvote-image");
 
     if (checkUserHasUpvotedPost(upvotes)) {
         console.log("Setting active upvote icon");
-        upvoteImg.setAttribute('src', 'resources/upvote.png');
+        upvoteBtn.setAttribute('src', 'resources/upvote.png');
         userUpvotes[postIds[post_index]] = true;
     } else {
         console.log("Setting inactive upvote icon");
-        upvoteImg.setAttribute('src', 'resources/upvote-inactive.png');
+        upvoteBtn.setAttribute('src', 'resources/upvote-inactive.png');
         userUpvotes[postIds[post_index]] = false;
     }
+    upvoteBtn.setAttribute('alt', "upvote-image");
+    let voteDisplay = document.createElement('h2');
+    voteDisplay.classList.add('.upvote-count');
+    voteDisplay.textContent = upvotes.length;
+    upvoteCounts.push(voteDisplay);
 
-    upvoteImg.setAttribute('alt', "upvote-image");
-    let upvoteCount = document.createElement('h2');
-    upvoteCount.classList.add('.upvote-count');
-    upvoteCount.textContent = upvotes.length;
-    upvoteCounts.push(upvoteCount);
+    postVoteDiv.append(voteDisplay);
+    postVoteDiv.append(upvoteBtn);
 
-    upvoteDiv.append(upvoteCount);
-    upvoteDiv.append(upvoteImg);
+    return [postVoteDiv, upvoteBtn];
+}
 
-    upvoteImg.addEventListener('click', function(event) {
+// Helper method to easily add new Posts to the existing posts-container div
+function appendPost(post, upvotes, post_index) {
+    console.log(post);
+    let postContainer = document.querySelector(".posts-container");
+    let postDiv = document.createElement('div');
+    postDiv.classList.add("post");
+    let postTitleDiv = createPostTitleDiv(post);
+    let postImageDiv = createPostImageDiv(post);
+    let postContentDiv = createPostContentDiv(post);
+    let [postVoteDiv, upvoteBtn] = createPostVoteDiv(upvotes, post_index);
+
+    upvoteBtn.addEventListener('click', function(event) {
         console.log("Upvote clicked");
         if (userUpvotes[postIds[post_index]]) {
             // DELETE request for Upvote
@@ -227,7 +243,7 @@ function appendPost(post, upvotes, post_index) {
                 let upvoteCountElement = upvoteCounts[post_index];
                 let numUpvotes = parseInt(upvoteCountElement.textContent, 10);
                 upvoteCountElement.textContent = --numUpvotes;
-                upvoteImg.setAttribute('src', 'resources/upvote-inactive.png');
+                upvoteBtn.setAttribute('src', 'resources/upvote-inactive.png');
             })
         } else {
             // POST request for Upvote
@@ -245,7 +261,7 @@ function appendPost(post, upvotes, post_index) {
             })
             .then(responseText => {
                 console.log(responseText);
-                upvoteImg.setAttribute('src', 'resources/upvote.png');
+                upvoteBtn.setAttribute('src', 'resources/upvote.png');
                 let upvoteCountElement = upvoteCounts[post_index];
                 console.log(upvoteCountElement);
                 let numUpvotes = parseInt(upvoteCountElement.textContent, 10);
@@ -258,8 +274,7 @@ function appendPost(post, upvotes, post_index) {
     postDiv.append(postTitleDiv);
     postDiv.append(postImageDiv);
     postDiv.append(postContentDiv);
-    postDiv.append(upvoteDiv);
-
+    postDiv.append(postVoteDiv);
     postContainer.append(postDiv);
 }
 

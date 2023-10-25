@@ -56,11 +56,13 @@ function setEventHandlers() {
         .then(responseSuccess => {
             console.log(responseSuccess);
         })
+        updatedPostData = {};
         window.location.reload();
     })
     let confirmationAccept = document.querySelector(".confirm-delete");
     let confirmationDecline = document.querySelector(".cancel-delete");
     confirmationAccept.addEventListener('click', function(event) {
+        console.log("Deleting post with id=" + selectedPostId);
         fetch("http://localhost:8080/api/posts/delete?post_id=" + selectedPostId, {
             method: "DELETE"
         })
@@ -77,13 +79,14 @@ function setEventHandlers() {
             console.log(responseData);
         })
         confirmationDialog.style.display = "none";
-        window.location.reload();
+        delay(50).then(() => {
+            window.location.reload();
+        })
     })
+
     confirmationDecline.addEventListener('click', function(event) {
         confirmationDialog.style.display = "none";
-        window.location.reload();
     })
-    updatedPostData = {};
 }
 
 // GET request to the backend to retrieve all posts associated with the current userId
@@ -114,7 +117,7 @@ function fetchUserPosts() {
 
 
 function appendPost(postTitle, postContent, postImageUrl, post_id, post_index) {
-    let postContainer = document.querySelector(".my-posts-container");
+    let postContainer = document.querySelector(".posts-container");
 
     let postDiv = document.createElement('div');
     postDiv.classList.add("post");
@@ -153,6 +156,7 @@ function appendPost(postTitle, postContent, postImageUrl, post_id, post_index) {
     });
     deleteButton.addEventListener('click', function(event) {
         selectedPostId = posts[post_index]['id'];
+        console.log(selectedPostId);
         confirmationDialog.style.display="block";
     });
 
@@ -177,3 +181,7 @@ function appendPost(postTitle, postContent, postImageUrl, post_id, post_index) {
     let postObject = {'id': post_id, 'title': postTitle, 'imageUrl': postImageUrl, 'textContent': postContent};
     posts.push(postObject);
 }
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }

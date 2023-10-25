@@ -1,4 +1,10 @@
+.index-header {
+    text-align: center;
+}
 
+.login-header {
+    text-align: center;
+}
 
 .inputs-container label {
     display: inline-block;
@@ -127,6 +133,9 @@
     cursor: pointer;
 }
 
+.invalid-credentials-text {
+    color: red;
+}
 
 form label,
 form input,
@@ -157,12 +166,11 @@ form button:hover {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    border: 5px solid rgb(30, 30, 34);
 }
 
 .post {
-    width: auto; /* Set your desired width */
-    height: auto; /* Set your desired height */
+    width: auto;
+    height: auto; 
 
     border: 2px solid rgb(101, 117, 145);
     overflow: hidden; 
@@ -291,12 +299,12 @@ form button:hover {
   }
   
 
-  ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: #888; 
     border-radius: 6px; 
   }
   
 
-  ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
