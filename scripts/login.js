@@ -5,12 +5,13 @@ function loginPage() {
     if (loginForm) {
         loginForm.addEventListener("submit", function(event) {
             event.preventDefault();
+            document.body.style.cursor = "wait";
             let inputValues = document.forms['login-form'].getElementsByTagName('input');
             let userOrEmail = inputValues[0].value;
             let password = inputValues[1].value;
             let errorText = document.querySelector(".invalid-credentials-text");
             if (userOrEmail && password) {
-                fetch("http://localhost:8080/api/users/find?userOrEmail=" + userOrEmail + "&password=" + password, 
+                fetch("https://cpsc349p1.uw.r.appspot.com/api/users/find?userOrEmail=" + userOrEmail + "&password=" + password, 
                 {
                     method: 'GET',
                 })
@@ -26,6 +27,7 @@ function loginPage() {
                         console.log(user['user_id']);
                         localStorage.setItem("user_id", user['user_id']);
                         localStorage.setItem("username", user['username'])
+                        document.body.style.cursor = "default";
                         window.location.href = 'main.html';
                     } catch (e) {
                         if (e instanceof SyntaxError) {
@@ -34,6 +36,7 @@ function loginPage() {
                             inputValues[1].classList.add("invalid");
                             errorText.textContent = "Username/Email or Password were incorrect!";
                             errorText.style.display = "block";
+                            document.body.style.cursor = "default";
                         }
                     }
                 })

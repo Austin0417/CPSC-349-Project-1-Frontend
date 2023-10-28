@@ -185,7 +185,9 @@ form button:hover {
 }
 
 .post-image {
-    max-width: 70%; 
+    width: 500%;
+    max-width: 600px;
+    height: auto;
     max-height: 80%; 
     
     display: flex; 

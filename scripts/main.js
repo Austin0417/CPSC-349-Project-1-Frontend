@@ -39,6 +39,7 @@ function addEventHandlers() {
     let createPosts = document.querySelector("#create-post");
     let viewPosts = document.querySelector("#view-my-posts");
     let postForm = document.querySelector("#post-form");
+    let createPostBtn = document.querySelector("#create-post-button");
     let logout = document.querySelector("#logout");
 
     toggleBtn.addEventListener("click", function (event) {
@@ -66,25 +67,32 @@ function addEventHandlers() {
 
 
     // On form submit, perform a POST request to the backend, which will create a new post belonging to the current userId
-    postForm.addEventListener('submit', function(event) {
+    createPostBtn.addEventListener('click', function(event) {
         event.preventDefault();
         postDialog.style.display = 'none';
+        document.body.style.cursor = "wait";
         let formInputs = postForm.elements;
 
         let postTitle = formInputs[0].value;
         let postContent = formInputs[1].value;
         let imageUrl = formInputs[2].value;
 
+        if (!postTitle || !imageUrl) {
+            alert("You must fill out the title and image URL fields");
+            return;
+        }
+
         let data = {};
         data['title'] = postTitle;
         data['textContent'] = postContent;
         data['imageUrl'] = imageUrl;
         data['username'] = localStorage.getItem('username');
+        console.log("Submit button click");
         console.log(data);
         let current_user_id = localStorage.getItem('user_id');
-        console.log(current_user_id);
+        console.log("Current user id: " + current_user_id);
         if (current_user_id >= 0) {
-            fetch("http://localhost:8080/api/posts?user_id=" + current_user_id, {
+            fetch("https://cpsc349p1.uw.r.appspot.com/api/posts?user_id=" + current_user_id, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -99,12 +107,15 @@ function addEventHandlers() {
             })
             .then(data => {
                 console.log(data);
+                document.body.style.cursor = "default";
+                window.location.reload(true);
             })
             .catch(error => {
                 console.log(error);
+                document.body.style.cursor = "default";
             });
         }
-        window.location.reload(true);
+
     })
 
     viewPosts.addEventListener('click', function(event) {
@@ -117,7 +128,8 @@ function addEventHandlers() {
 // Using the stored user_id, query the database for all posts having userId == user_id
 function postsPage() {
     if (shouldLoadPosts()) {
-        fetch('http://localhost:8080/api/posts', {
+        document.body.style.cursor = "wait";
+        fetch('https://cpsc349p1.uw.r.appspot.com/api/posts', {
             method: 'GET'
         })
         .then(response => {
@@ -134,9 +146,11 @@ function postsPage() {
                 postIds.push(post['id']);
                 appendPost(post, post['upvotes'], index);
             })
+            document.body.style.cursor = "default";
             console.log(userUpvotes);
         })
         .catch(error => {
+            document.body.style.cursor = "default";
             console.log(error);
         })
     }
@@ -226,7 +240,7 @@ function appendPost(post, upvotes, post_index) {
         console.log("Upvote clicked");
         if (userUpvotes[postIds[post_index]]) {
             // DELETE request for Upvote
-            fetch('http://localhost:8080/api/upvotes/remove?user_id=' + user_id + '&post_id=' + postIds[post_index], {
+            fetch('https://cpsc349p1.uw.r.appspot.com/api/upvotes/remove?user_id=' + user_id + '&post_id=' + postIds[post_index], {
                 method: "DELETE"
             })
             .then(response => {
@@ -247,7 +261,7 @@ function appendPost(post, upvotes, post_index) {
             })
         } else {
             // POST request for Upvote
-            fetch('http://localhost:8080/api/upvotes?user_id=' + user_id + '&post_id=' + postIds[post_index], {
+            fetch('https://cpsc349p1.uw.r.appspot.com/api/upvotes?user_id=' + user_id + '&post_id=' + postIds[post_index], {
                 method: "POST"
             })
             .then(response => {
@@ -292,3 +306,4 @@ function checkUserHasUpvotedPost(upvotes) {
     })
     return result;
 }
+

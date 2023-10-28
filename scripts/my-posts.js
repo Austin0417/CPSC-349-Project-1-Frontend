@@ -34,10 +34,10 @@ function setEventHandlers() {
         updatedPostData['imageUrl'] = dialogPostImageUrl.value;
         console.log("Updated Post: " + JSON.stringify(updatedPostData));
         postDialog.style.display = "none";
-
+        document.body.style.cursor = "wait";
 
         // Make a PUT request to the server
-        fetch("http://localhost:8080/api/posts?post_id=" + selectedPostId, {
+        fetch("https://cpsc349p1.uw.r.appspot.com/api/posts?post_id=" + selectedPostId, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -51,19 +51,24 @@ function setEventHandlers() {
             return response.text();
         })
         .catch(error => {
+            document.body.style.cursor = "default";
             console.log(error);
         })
         .then(responseSuccess => {
             console.log(responseSuccess);
+            updatedPostData = {};
+            document.body.style.cursor = "default";
+            window.location.reload();
         })
-        updatedPostData = {};
-        window.location.reload();
+
     })
     let confirmationAccept = document.querySelector(".confirm-delete");
     let confirmationDecline = document.querySelector(".cancel-delete");
     confirmationAccept.addEventListener('click', function(event) {
+        event.preventDefault();
+        document.body.style.cursor = "wait";
         console.log("Deleting post with id=" + selectedPostId);
-        fetch("http://localhost:8080/api/posts/delete?post_id=" + selectedPostId, {
+        fetch("https://cpsc349p1.uw.r.appspot.com/api/posts/delete?post_id=" + selectedPostId, {
             method: "DELETE"
         })
         .then(response => {
@@ -73,15 +78,18 @@ function setEventHandlers() {
             return response.text();
         })
         .catch(error => {
+            document.body.style.cursor = "default";
             console.log(error);
         })
         .then(responseData => {
             console.log(responseData);
-        })
-        confirmationDialog.style.display = "none";
-        delay(50).then(() => {
+            document.body.style.cursor = "default";
             window.location.reload();
         })
+        confirmationDialog.style.display = "none";
+        // delay(500).then(() => {
+        //     window.location.reload();
+        // })
     })
 
     confirmationDecline.addEventListener('click', function(event) {
@@ -94,7 +102,8 @@ function fetchUserPosts() {
     let user_id = localStorage.getItem("user_id");
     console.log(user_id);
     if (user_id >= 0) {
-        fetch("http://localhost:8080/api/posts/find?user_id=" + user_id, {
+        document.body.style.cursor = "wait";
+        fetch("https://cpsc349p1.uw.r.appspot.com/api/posts/find?user_id=" + user_id, {
             method: "GET"
         })
         .then(response => {
@@ -104,6 +113,7 @@ function fetchUserPosts() {
             return response.text();
         })
         .catch(error => {
+            document.body.style.cursor = "default";
             console.log(error);
         })
         .then(userPosts => {
@@ -111,6 +121,7 @@ function fetchUserPosts() {
             json.forEach((userPost, index) => {
                 appendPost(userPost['title'], userPost['textContent'], userPost['imageUrl'], userPost['id'], index);
             })
+            document.body.style.cursor = "default";
         })
     }
 }
