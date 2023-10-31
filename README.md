@@ -3,13 +3,13 @@ Documentation for CPSC 349 Project 1
 
 The project uses PostgreSQL for it’s database, download it here. Make sure to also include pgAdmin with the installation when prompted
 Open up pgAdmin, and create a new database titled “users”. 
-![alt text](https://lh3.googleusercontent.com/keep-bbsk/AG3SVnCTOpxmk9JbtcPTrCNbuQM_zaV9K6N-FZufsJtKoQxGmKmBObyC36un5Qb2ko5UTfFyJSzCuZr8xTf-pjLtHzR1hZceermwZ88h-0WXgbhaRb6X=s512)
+![alt text](https://cdn.discordapp.com/attachments/362059855701475333/1169016494613610576/documentation_pic_1.png?ex=6553de73&is=65416973&hm=ce022cc0185ab5c5ba2fe82b18f41c09aab4c4d01beb8ceedfd02bc9c1be955d&)
 
 
 
 Download IntelliJ (Java IDE) here
 Git clone the Github repository from this link, and open the “demo” folder with IntelliJ. The root directory should look like the image below in IntelliJ.
-![alt text](https://lh3.googleusercontent.com/keep-bbsk/AG3SVnDuFSl4ekWjI4tFTbXGkewU0lrQ79dznZO4s3qA7sCF_R_05SExdyJPuV0JN2dhE7sRXFw7_Rf5-lpc-dpN2z3kyWfXfgva1Ga9Va__Q47AWVUT=s512)
+![alt text](https://cdn.discordapp.com/attachments/362059855701475333/1169016494953336912/documentation_pic_2.png?ex=6553de73&is=65416973&hm=86443f0b30c857cc7620588ac194e82a59ff0f8e7c8b409751fd17e6a571368b&)
 
 Navigate to the application.properties file. From the demo root directory: src/main//resources/application.properties. Copy paste the following lines into the file:
 
