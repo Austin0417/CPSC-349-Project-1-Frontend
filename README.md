@@ -32,6 +32,7 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
 
+
 Make sure to replace the password with your own password that you set when first opening pgAdmin
 
 Click run to start the Spring Boot backend.
