@@ -17,19 +17,19 @@ Documentation for CPSC 349 Project 1
 
 5.  Navigate to the application.properties file. From the demo root directory: src/main//resources/application.properties. Copy paste the following lines into the file:
 
-spring.datasource.url = jdbc:postgresql://localhost:5432/users
+    spring.datasource.url = jdbc:postgresql://localhost:5432/users
 
-spring.datasource.username = postgres
+    spring.datasource.username = postgres
 
-spring.datasource.password = {your PostgreSQL password}
+    spring.datasource.password = {your PostgreSQL password}
 
-spring.datasource.driver-class-name=org.postgresql.Driver
+    spring.datasource.driver-class-name=org.postgresql.Driver
 
-spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.hibernate.ddl-auto=update
 
-spring.jpa.show-sql=true
+    spring.jpa.show-sql=true
 
-spring.jpa.properties.hibernate.format_sql=true
+    spring.jpa.properties.hibernate.format_sql=true
 
 
 
