@@ -3,6 +3,8 @@ Documentation for CPSC 349 Project 1
 
 The project uses PostgreSQL for it’s database, download it here. Make sure to also include pgAdmin with the installation when prompted
 Open up pgAdmin, and create a new database titled “users”. 
+
+
 ![alt text](https://cdn.discordapp.com/attachments/362059855701475333/1169016494613610576/documentation_pic_1.png?ex=6553de73&is=65416973&hm=ce022cc0185ab5c5ba2fe82b18f41c09aab4c4d01beb8ceedfd02bc9c1be955d&)
 
 
