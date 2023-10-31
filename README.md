@@ -11,6 +11,8 @@ Open up pgAdmin, and create a new database titled “users”.
 
 Download IntelliJ (Java IDE) here
 Git clone the Github repository from this link, and open the “demo” folder with IntelliJ. The root directory should look like the image below in IntelliJ.
+
+
 ![alt text](https://cdn.discordapp.com/attachments/362059855701475333/1169016494953336912/documentation_pic_2.png?ex=6553de73&is=65416973&hm=86443f0b30c857cc7620588ac194e82a59ff0f8e7c8b409751fd17e6a571368b&)
 
 Navigate to the application.properties file. From the demo root directory: src/main//resources/application.properties. Copy paste the following lines into the file:
